@@ -1,0 +1,34 @@
+# Menuets application startup script
+
+# This file lists the applications that are started automatically on power up.
+# Blank lines, or lines beginning with # are ignored - they are comments.
+
+# The format for each line is:
+# APPLICATIONNAME PARAMETER DELAY
+# 
+# applicationname is the filename of the application, in uppercase
+# parameter is the string passed to the application - normally boot,
+# although programs like tinypad expect a filename instead. This string can be
+# up to 64 characters in length.
+# delay is the starup delay for the application in ms ( 1000 = 1 second )
+# This is to give some applications time to startup before the next is called.
+# 2000 is the recommended default.
+
+# You may specify up to 50 applications in this file!
+
+
+# If you like the old background image, you can uncomment this line,
+# and comment out the JPEGVIEW one.
+#PIC4 BOOT 2000
+
+JPEGVIEW BOOT 2000
+
+#PANEL BOOT 2000
+
+ICONMNGR BOOT 2000
+
+MPANEL BOOT 2000
+
+# This line opens tinypad and loads this file.
+# Not very useful, but it demonstrates other parameter options
+#TINYPAD /RD/1/RDBOOT.DAT 2000

@@ -1,0 +1,44 @@
+   
+HOWTO.TXT
+   
+   
+1) How to load RAM image from hd at boot-time ?
+   
+At this point you'll still need the floppy.
+   
+The image is loaded from the root of fat32 partition (win95/98)
+located at PRIMARY MASTER's first partition (mostly drive C:)
+   
+Basicly, all you have to do is to copy the MSETUP.EXE (0.65 pre-5 +)
+to root of your win95/98 C: drive and Menuet will load the image
+from that file.
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   

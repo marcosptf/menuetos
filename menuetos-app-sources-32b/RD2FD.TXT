@@ -1,0 +1,16 @@
+_RD2FD_
+
+Important!:
+the RAMDISK in memory should be the same as the one on the DISKETTE. (boot with option 1, read from floppy)
+Don't remove the diskette while it's written to, or when you are about to write to it.
+
+Commands:
+[Copy] Write the whole ramdisk to the floppy.
+[Update] Write only the changes you made to the floppy.
+
+Settings:
+[X] Write directly to floppy: also does an 'update' the next time you save a file.
+
+Reading is 'grayed out' because it's not implemented yet.
+
+The settings are currently not saved. This will change in later versions.

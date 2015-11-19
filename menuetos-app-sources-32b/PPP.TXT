@@ -1,0 +1,96 @@
+PPP Dialer
+==========
+
+by Mike Hibbett and Shrirang Bhagwat
+
+PPP Dialer is a PPP client that connects Menuet to the internet through an
+external serial modem.
+
+PPP dialer uses COM port settings from Stack Configuration application.
+For Com1: port 0x3F8 and irq 4. Com2: port 0x2f8 and irq 3.
+
+Before using PPP you must configure it for your Internet Service Provider.
+Details are shown below.
+
+Once you have configured PPP and re-assembled it, simply run the program and
+press DAIL. When the ISP answers the call and the modems establish a
+connection ( which can take 30s ), PPP will display 'PPP started'. When
+the host has assigned an IP address to menuet you will see
+'IP Link established' and the assigned IP address.
+
+You do not have to set up or configure any other parts of the stack system.
+Once PPP is established, the stack is fully operational.
+
+To disconnect, click on DISCONNECT. MAke sure your modem hangs up within 10s.
+If not, turn the modem off.
+
+See stack.txt for a description of internet applications available under
+Menuet.
+
+
+Configuring PPP
+===============
+
+To configure PPP you must change the source code and re-assemble it.
+
+There are three bits of information you need to make the changes
+
+1) The telephone number of your ISP
+2) The username that PPP uses when connecting to the ISP
+3) The password that PPP uses when connecting to the ISP
+
+The source code for PPP is in PPP.ASM and CHAT.INC.
+
+In file CHAT.INC, change the 'phonenumber' following ATDT to your ISP
+telephone number.
+
+In file PPP.ASM line 2172, change the first 'free' string to your ISP's
+username. Change the second 'free' string to your ISP's password.
+There are three numbers on this line: 14, 4, 4.
+The first number, 14, is the length of the bytes that follow + 4
+The second number is the length of the username string
+The third number is the length of the password string.
+Change these numbers if the lengths of the strings you enter are different
+to the lengths of the original strings.
+
+Here is an example.
+
+original:   PAPREQStr           db 14, 4, 'free', 4, 'free'
+new:        PAPREQStr           db 20, 8, 'username', 6, 'passwd'
+
+When you have made these changes, save them back to the ram disk.
+To assemble the changes, run FASM.
+Change infile to PPP.ASM
+Change outfile to PPP
+Click on START COMPILE.
+
+You can now run PPP from FASM or from the menu.
+
+
+Debugging
+=========
+
+By default PPP outputs no debuggin information. If you are interested in
+seeing what PPP is doing, there are debugging option in the source file
+PPP.ASM that you can change.
+
+These options are
+
+DEBUG_OUTPUT        If set to FALSE, no debugging information is generated
+DEBUG_PPP_OUTPUT    If set to TRUE, PPP data exchanges are displayed
+DEBUG_PORT2_OUTPUT  If set to TRUE, debugging information will go to com2
+
+The debugging output will go to the DEBUG BOARD for display. Every IP
+packet received or transmitted is printed.
+
+This information is actually quite interesting; You can see attempts by
+viruses on remote hosts to connect to your machine.
+
+
+Understanding how to configure PPP for connection to an ISP can be quite
+difficult, so feel free to contact one of the authors directly or on
+the Forum.
+
+Any questions, contact the authors:
+mikehibbett [@] oceanfree.net
+b_shrirang@hotmail.com

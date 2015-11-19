@@ -1,0 +1,227 @@
+                PCI Driver - sysfunc 62
+                -----------------------
+
+  bl=0 - get PCI version
+	OUT: AL=minor, AH=major
+  bl=1 - get last bus
+	OUT: AL=last bus in system
+  bl=2 - get PCI access mechanism
+	OUT: AL=1 or 2
+
+  bl=4,5,6 - read configuration register (byte,word,dword)
+	IN: bus in bl 
+	    device+func in ch (dddddfff)
+	    register address in cl 
+                word-aligned for word registers (bl=5)
+                dword-aligned for dword registers (bl=6)
+        OUT: register contents in AL/AX/EAX
+
+  bl=8,9,10 - write configuration register (byte,word,dword)
+	IN: bus in bl 
+	    device+func in ch (dddddfff)
+	    register address in cl
+                word-aligned for word registers (bl=9)
+                dword-aligned for dword registers (bl=10)
+            value in DL/DX/EDX
+	OUT: 0 if ok, -1 if err
+
+
+                How to scan system for PCI devices
+                ----------------------------------
+
+  loop bus from 0 to lastbus
+    loop devfn from 0 to 255
+      begin
+        mov bl,6
+        mov bh,bus
+        mov ch,devfn
+	mov cl,0     ; register adress
+	mov eax,62
+	int 0x40
+        cmp ax,0
+	je  next
+	cmp ax,0xffff
+	je  next
+	
+	; we've found a device
+	; now: EAX = (deviceID<<16)+vendorID
+next:
+      end
+
+                Standard PCI registers
+                ----------------------
+
+
+   addr  type  name 
+
+   0	 word vendorID 
+   2	 word deviceID 
+   4	 word command_reg 
+   6     word status_reg 
+   8	 byte revisionID 
+   9	 byte progIF 
+   10    byte subclass 
+   11	 byte classcode 
+   12	 byte cacheline_size 
+   13	 byte latency 
+   14    byte header_type
+   15	 byte BIST
+   16    header-type specific
+
+header_type values:
+   0     nonbridge
+   1     bridge
+   2     cardbus
+
+nonbridge device registers:
+
+   16 	 dword base_adress0
+   20	 dword base_address1
+   24	 dword base_address2
+   28	 dword base_address3
+   32	 dword base_address4
+   36	 dword base_address5
+   40	 dword CardBus_CIS
+   44	 word  subsystem_vendorID
+   46	 word  subsystem_deviceID
+   48	 dword expansion_ROM
+   50	 byte  cap_ptr
+   51	 byte  reserved1[3]
+   54	 dword reserved2[1]
+   58	 byte  interrupt_line
+   59	 byte  interrupt_pin
+   60	 byte  min_grant
+   61	 byte  max_latency
+   62	 dword device_specific[48]
+
+bridge device registers:
+
+   16 	 dword base_adress0
+   20	 dword base_address1
+   24	 byte  primary_bus
+   25	 byte  secondary_bus
+   26	 byte  subordinate_bus
+   27	 byte  secondary_latency
+   28	 byte  IO_base_low
+   29	 byte  IO_limit_low
+   30	 word  secondary_status
+   32	 word  memory_base_low
+   34	 word  memory_limit_low
+   36	 word  prefetch_base_low
+   38	 word  prefetch_limit_low
+   40	 dword prefetch_base_high
+   44	 dword prefetch_limit_high
+   48	 word  IO_base_high
+   50	 word  IO_limit_high
+   52	 dword reserved2[1]
+   56	 dword expansion_ROM
+   60    byte  interrupt_line
+   61	 byte  interrupt_pin
+   62	 word  bridge_control
+   64	 dword device_specific[48]
+
+cardbus device registers:
+
+   16	 dword ExCa_base
+   20	 byte  cap_ptr
+   21	 byte  reserved05
+   22	 word  secondary_status
+   24	 byte  PCI_bus
+   25	 byte  CardBus_bus
+   26	 byte  subordinate_bus
+   27	 byte  latency_timer
+   28	 dword memory_base0
+   32	 dword memory_limit0
+   36	 dword memory_base1
+   40	 dword memory_limit1
+   44	 word  IObase_0low
+   46	 word  IObase_0high
+   48	 word  IOlimit_0low
+   50	 word  IOlimit_0high
+   52	 word  IObase_1low 
+   54	 word  IObase_1high
+   56	 word  IOlimit_1low
+   58	 word  IOlimit_1high
+   60	 byte  interrupt_line
+   61	 byte  interrupt_pin
+   62	 word  bridge_control
+   64	 word  subsystem_vendorID
+   66	 word  subsystem_deviceID
+   68	 dword legacy_baseaddr
+   72	 dword cardbus_reserved[14]
+  128	 dword vendor_specific[32]
+
+
+                classcode & subclass
+                --------------------
+
+ classcode   subclass    device class
+    1           *        Disk
+    1           0        SCSI
+    1           1        IDE
+    1           2        Floppy
+    1           3        IPI
+    1           4        RAID
+
+    2           *        Network
+    2           0        Ethernet
+    2           1        Token Ring
+    2           2        FDDI
+    2           3        ATM
+
+    3           *        Display
+    3           0        VGA
+    3           1        SVGA
+    3           2        XGA
+
+    4           *        Multimedia
+    4           0        video
+    4           1        audio
+
+    5           *        Memory
+    5           0        RAM
+    5           1        Flash memory
+
+    6           *        Bridge
+    6           0        CPU/PCI
+    6           1        PCI/ISA
+    6           2        PCI/EISA
+    6           3        PCI/MCA
+    6           4        PCI/PCI
+    6           5        PCI/PCMCIA
+    6           6        PCI/NuBus
+    6           7        PCI/CardBus
+
+    7           *        Communication
+    7           0        serial
+    7           1        parallel
+    
+    8           *        System peripheral
+    8           0        PIC
+    8           1        DMAC
+    8           2        timer
+    8           3        RTC
+     
+    9           *        Input
+    9           0        keyboard
+    9           1        digitizer
+    9           2        mouse
+   
+    10          *        Docking station
+    10          0        generic
+    
+    11          *        CPU
+    11          0        386
+    11          1        486
+    11          2        Pentium
+    11          3        P6
+    11         0x10      Alpha
+    11         0x40      coproc
+
+    12          *        SerialBus
+    12          0        Firewire
+    12          1        ACCESS.bus
+    12          2        SSA
+    12          3        USB
+    12          4        FiberChannel
+   
