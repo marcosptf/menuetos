@@ -136,7 +136,7 @@ int 0x40 = execute system call
              edx - Button ID number (24 bits)
 
               bit 31 - removes a button matching the id
-                       function doesn't remove the button image 
+                       function doesnt remove the button image 
                        to avoid unnecessary flickering
               bit 30 - button image is not drawn
               bit 29 - rectangle is not drawn when pressed
